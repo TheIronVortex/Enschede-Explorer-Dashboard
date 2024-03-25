@@ -8,26 +8,51 @@ import BreadcrumbNav from "../Navbar/BreadcrumNav";
 import Form from "react-bootstrap/esm/Form";
 import { ref, set } from "firebase/database";
 import db from "../FirebaseInit";
+import OverviewInput from "./OverviewInput";
 
 
 function UserData() {
-  const Description = 0
-  const Location = 1
-  const PoiID = 2
-  const PoiName = 3
-  const PoiType = 4
+
+  //const Cooldown = 0;
+  var Description = 0;
+  var Location = 1;
+  //const Ownership = 3;
+  var PoiID = 2;
+  var PoiName = 3;
+  var PoiType = 4;
 
   const { parentKeys, data, ValueName } = GetData();
   const [editableFields, setEditableFields] = useState({
     [parentKeys[2]]: false,
     [parentKeys[1]]: false,
   });
-  const progressKeys = data ? Object.keys(data[parentKeys[3]]) : [];
-  const progressValues = data ? Object.values(data[parentKeys[3]]) : [];
+
+  if (parentKeys && parentKeys.includes("Ownership")) {
+    var Ownership = 2;
+    PoiID++;
+    PoiName++;
+    PoiType++;
+  } 
+
+  if (parentKeys && parentKeys.includes("Cooldowns")) {
+    var Cooldown = 0;
+    Description++;
+    Location++;
+    Ownership++;
+    PoiID++;
+    PoiName++;
+    PoiType++;
+  } 
+  
+  //console.log(Cooldown, Description, Location, Ownership, PoiID, PoiName, PoiType)
+  
+  const cooldownKeys = data ? Object.keys(data[parentKeys[0]]) : [];
+  // const cooldownValues = data ? Object.values(data[parentKeys[0]]) : [];
   const [editedValues, setEditedValues] = useState({
     [parentKeys[2]]: "",
     [parentKeys[1]]: "",
   });
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -52,7 +77,7 @@ function UserData() {
       var inputData = value;
       const dataToUpdate = {};
       dataToUpdate[field] = inputData;
-      if (progressKeys.includes(field)) {
+      if (cooldownKeys.includes(field)) {
         inputData = parseInt(value);
         set(ref(db, `Users/${ValueName}/Progression/${field}`), inputData);
       } else {
@@ -68,14 +93,16 @@ function UserData() {
     });
   };
 
-  const handleSaveProgress = () => {
-    // Save all progress keys and values
-    Object.keys(editedValues[parentKeys[3]]).forEach((key) => {
-      saveData(key, editedValues[parentKeys[3]][key]);
+  /*
+  const handleSaveCooldown = () => {
+    // Save all cooldown keys and values
+    Object.keys(editedValues[parentKeys[0]]).forEach((key) => {
+      saveData(key, editedValues[parentKeys[0]][key]);
     });
-    // Toggle edit mode for all progress keys
-    toggleEditMode(parentKeys[3]);
+    // Toggle edit mode for all cooldown keys
+    toggleEditMode(parentKeys[0]);
   };
+  */
 
   if (loading) {
     return <div>Fetching Data...</div>;
@@ -225,6 +252,8 @@ function UserData() {
                       </Button>
                     </div>
                   </Form.Group>
+
+                  
 
                   <Form.Group>
                     <Form.Label>{parentKeys[Description]}:</Form.Label>

@@ -11,17 +11,26 @@ import db from "../FirebaseInit";
 
 
 function UserData() {
+  //const Character = 0;
+  const Description = 1;
+  const PlayerName = 2;
+  const Progression = 3;
+  const UserID = 4;
+
+
   const { parentKeys, data, ValueName } = GetData();
   const [editableFields, setEditableFields] = useState({
     [parentKeys[2]]: false,
     [parentKeys[1]]: false,
   });
+
   const progressKeys = data ? Object.keys(data[parentKeys[3]]) : [];
   const progressValues = data ? Object.values(data[parentKeys[3]]) : [];
   const [editedValues, setEditedValues] = useState({
     [parentKeys[2]]: "",
     [parentKeys[1]]: "",
   });
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -99,37 +108,37 @@ function UserData() {
           <Card className="p-5 bg-secondary rounded-5">
             <Row>
               <Col>
-                <h1 className="pb-3 text-light">{data && data[parentKeys[2]]}</h1>
+                <h1 className="pb-3 text-light">{data && data[parentKeys[PlayerName]]}</h1>
               </Col>
             </Row>
             <Row>
               <Col md className="bg-white rounded-start-5 p-3">
                 <Form>
                   <Form.Group>
-                    <Form.Label>{parentKeys[4]}:</Form.Label>
+                    <Form.Label>{parentKeys[UserID]}:</Form.Label>
                     <div className="d-flex align-items-center">
                       <Form.Control
                         disabled
                         type="text"
                         className="ms-4 bg-light"
                         style={{ width: "95%" }}
-                        defaultValue={data && data[parentKeys[4]]}
+                        defaultValue={data && data[parentKeys[UserID]]}
                       />
                     </div>
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label>{parentKeys[2]}:</Form.Label>
+                    <Form.Label>{parentKeys[PlayerName]}:</Form.Label>
                     <div className="d-flex align-items-center">
                       <Form.Control
-                        disabled={!editableFields[parentKeys[2]]}
+                        disabled={!editableFields[parentKeys[PlayerName]]}
                         type="text"
                         className="ms-4 bg-light"
                         style={{ width: "95%" }}
-                        defaultValue={data && data[parentKeys[2]]}
+                        defaultValue={data && data[parentKeys[PlayerName]]}
                         onChange={(e) =>
                           handleInputChange(
-                            parentKeys[2],
+                            parentKeys[PlayerName],
                             e.target.value
                           )
                         }
@@ -138,31 +147,31 @@ function UserData() {
                         variant="secondary"
                         className="ms-2"
                         onClick={() => {
-                          if (editableFields[parentKeys[2]]) {
+                          if (editableFields[parentKeys[PlayerName]]) {
                             saveData(
-                              parentKeys[2],
-                              editedValues[parentKeys[2]]
+                              parentKeys[PlayerName],
+                              editedValues[parentKeys[PlayerName]]
                             );
                           }
-                          toggleEditMode(parentKeys[2]);
+                          toggleEditMode(parentKeys[PlayerName]);
                         }}
                       >
-                        {editableFields[parentKeys[2]] ? "Save" : "Edit"}
+                        {editableFields[parentKeys[PlayerName]] ? "Save" : "Edit"}
                       </Button>
                     </div>
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label>{parentKeys[1]}:</Form.Label>
+                    <Form.Label>{parentKeys[Description]}:</Form.Label>
                     <div className="d-flex align-items-center">
                       <textarea
-                        disabled={!editableFields[parentKeys[1]]}
+                        disabled={!editableFields[parentKeys[Description]]}
                         className="form-control ms-4 bg-light"
                         style={{ width: "95%" }}
-                        defaultValue={data && data[parentKeys[1]]}
+                        defaultValue={data && data[parentKeys[Description]]}
                         onChange={(e) =>
                           handleInputChange(
-                            parentKeys[1],
+                            parentKeys[Description],
                             e.target.value
                           )
                         }
@@ -171,16 +180,16 @@ function UserData() {
                         variant="secondary"
                         className="ms-2"
                         onClick={() => {
-                          if (editableFields[parentKeys[1]]) {
+                          if (editableFields[parentKeys[Description]]) {
                             saveData(
-                              parentKeys[1],
-                              editedValues[parentKeys[1]]
+                              parentKeys[Description],
+                              editedValues[parentKeys[Description]]
                             );
                           }
-                          toggleEditMode(parentKeys[1]);
+                          toggleEditMode(parentKeys[Description]);
                         }}
                       >
-                        {editableFields[parentKeys[1]] ? "Save" : "Edit"}
+                        {editableFields[parentKeys[Description]] ? "Save" : "Edit"}
                       </Button>
                     </div>
                   </Form.Group>
@@ -196,13 +205,13 @@ function UserData() {
                             <div key={index} className="me-3">
                               <div>{key}:</div>
                               <Form.Control
-                                disabled={!editableFields[parentKeys[3]]}
+                                disabled={!editableFields[parentKeys[Progression]]}
                                 type="number"
                                 className="bg-light"
                                 defaultValue={progressValues[index]}
                                 onChange={(e) =>
-                                  handleInputChange(parentKeys[3], {
-                                    ...editedValues[parentKeys[3]],
+                                  handleInputChange(parentKeys[Progression], {
+                                    ...editedValues[parentKeys[Progression]],
                                     [key]: e.target.value,
                                   })
                                 }
@@ -217,13 +226,13 @@ function UserData() {
                         variant="secondary"
                         className="mt-2"
                         onClick={() => {
-                          if (editableFields[parentKeys[3]]) {
+                          if (editableFields[parentKeys[Progression]]) {
                             handleSaveProgress();
                           }
-                          toggleEditMode(parentKeys[3]);
+                          toggleEditMode(parentKeys[Progression]);
                         }}
                       >
-                        {editableFields[parentKeys[3]] ? "Save" : "Edit"}
+                        {editableFields[parentKeys[Progression]] ? "Save" : "Edit"}
                       </Button>
                     </Col>
                   </Row>

@@ -23,12 +23,12 @@ function UserData() {
     [parentKeys[2]]: false,
     [parentKeys[1]]: false,
   });
-  const progressKeys = data ? Object.keys(data[parentKeys[3]]) : [];
-  const progressValues = data ? Object.values(data[parentKeys[3]]) : [];
+
   const [editedValues, setEditedValues] = useState({
     [parentKeys[2]]: "",
     [parentKeys[1]]: "",
   });
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -53,12 +53,7 @@ function UserData() {
       var inputData = value;
       const dataToUpdate = {};
       dataToUpdate[field] = inputData;
-      if (progressKeys.includes(field)) {
-        inputData = parseInt(value);
-        set(ref(db, `Users/${ValueName}/Progression/${field}`), inputData);
-      } else {
-        set(ref(db, `Users/${ValueName}/${field}`), inputData);
-      }
+      set(ref(db, `Users/${ValueName}/${field}`), inputData);
     }
   };
 
@@ -69,18 +64,10 @@ function UserData() {
     });
   };
 
-  const handleSaveProgress = () => {
-    // Save all progress keys and values
-    Object.keys(editedValues[parentKeys[3]]).forEach((key) => {
-      saveData(key, editedValues[parentKeys[3]][key]);
-    });
-    // Toggle edit mode for all progress keys
-    toggleEditMode(parentKeys[3]);
-  };
-
   if (loading) {
     return <div>Fetching Data...</div>;
   }
+  
   
   return (
     <>
