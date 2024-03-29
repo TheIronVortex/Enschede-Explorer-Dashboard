@@ -10,7 +10,7 @@ import { ref, set } from "firebase/database";
 import db from "../FirebaseInit";
 
 
-function UserData() {
+function UserData({selectedColor}) {
   const PoiIDList = 0;
   const Description = 1;
   const RouteDistance = 2;
@@ -53,7 +53,7 @@ function UserData() {
       var inputData = value;
       const dataToUpdate = {};
       dataToUpdate[field] = inputData;
-      set(ref(db, `Users/${ValueName}/${field}`), inputData);
+      set(ref(db, `Routes/${ValueName}/${field}`), inputData);
     }
   };
 
@@ -90,7 +90,7 @@ function UserData() {
       */}
       <Row>
         <Col>
-          <Card className="p-5 bg-secondary rounded-5">
+          <Card className="p-5 card rounded-5">
             <Row>
               <Col>
                 <h1 className="pb-3 text-light">{data && data[parentKeys[RouteName]]}</h1>

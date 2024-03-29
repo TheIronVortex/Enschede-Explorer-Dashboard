@@ -1,20 +1,18 @@
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import React, { useEffect, useState } from "react";
 import { ref, onValue } from "firebase/database";
-import { useNavigate } from "react-router-dom";
 import db from "../FirebaseInit.js";
 import Row from "react-bootstrap/esm/Row";
 import Col from "react-bootstrap/esm/Col";
 import { ListGroup, Form } from 'react-bootstrap';
 import BreadcrumbNav from '../Navbar/BreadcrumNav.js';
 
-function SpecificDataPage() {
+function SpecificDataPage({selectedColor}) {
   const { ParentKey } = useParams(); // Access the key from URL params
 
   const [parentKeys, setParentKeys] = useState([]);
   const [filteredKeys, setFilteredKeys] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const navigate = useNavigate(); // Get navigate function from React Router
 
   useEffect(() => {
     const testRef = ref(db, "/" + ParentKey);
@@ -30,13 +28,7 @@ function SpecificDataPage() {
     return () => {
       unsubscribe();
     };
-  }, [ParentKey]); 
-
-  const handleItemClick = (ValueName) => {
-    // Append the new key to the existing URL keys using the delimiter "/"
-    const newUrl = `/Data-Dashboard/${ParentKey}/${ValueName}`;
-    navigate(newUrl);
-  };  
+  }, [ParentKey]);  
 
   // Function to handle search input change
   const handleSearchChange = (event) => {
@@ -78,7 +70,7 @@ function SpecificDataPage() {
             {filteredKeys.map((key, index) => (
               <ListGroup.Item key={index}>
                 {/* Trigger handleItemClick function on click */}
-                <a className="text-decoration-none text-dark d-block" onClick={() => handleItemClick(key)}>{key}</a>
+                <Link to={`/Data-Dashboard/${ParentKey}/${key}`} className="text-decoration-none text-dark d-block" >{key}</Link>
               </ListGroup.Item>
             ))}
           </ListGroup>

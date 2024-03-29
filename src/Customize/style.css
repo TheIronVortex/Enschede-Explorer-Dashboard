@@ -1,0 +1,12 @@
+:root {
+  --primary-color: #e20d18;
+}
+
+.card {
+  background-color: var(--primary-color) !important; 
+}
+
+.btn {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important; 
+}

@@ -10,12 +10,14 @@ import { ref, set } from "firebase/database";
 import db from "../FirebaseInit";
 
 
-function UserData() {
+function UserData({selectedColor}) {
   //const Character = 0;
   const Description = 1;
-  const PlayerName = 2;
-  const Progression = 3;
-  const UserID = 4;
+  // eslint-disable-next-line 
+  const Inventroy = 2
+  const PlayerName = 3;
+  const Progression = 4;
+  const UserID = 5;
 
 
   const { parentKeys, data, ValueName } = GetData();
@@ -24,8 +26,8 @@ function UserData() {
     [parentKeys[1]]: false,
   });
 
-  const progressKeys = data ? Object.keys(data[parentKeys[3]]) : [];
-  const progressValues = data ? Object.values(data[parentKeys[3]]) : [];
+  const progressKeys = data ? Object.keys(data[parentKeys[Progression]]) : [];
+  const progressValues = data ? Object.values(data[parentKeys[Progression]]) : [];
   const [editedValues, setEditedValues] = useState({
     [parentKeys[2]]: "",
     [parentKeys[1]]: "",
@@ -73,11 +75,11 @@ function UserData() {
 
   const handleSaveProgress = () => {
     // Save all progress keys and values
-    Object.keys(editedValues[parentKeys[3]]).forEach((key) => {
-      saveData(key, editedValues[parentKeys[3]][key]);
+    Object.keys(editedValues[parentKeys[Progression]]).forEach((key) => {
+      saveData(key, editedValues[parentKeys[Progression]][key]);
     });
     // Toggle edit mode for all progress keys
-    toggleEditMode(parentKeys[3]);
+    toggleEditMode(parentKeys[Progression]);
   };
 
   if (loading) {
@@ -105,7 +107,7 @@ function UserData() {
       */}
       <Row>
         <Col>
-          <Card className="p-5 bg-secondary rounded-5">
+          <Card className="p-5 card rounded-5">
             <Row>
               <Col>
                 <h1 className="pb-3 text-light">{data && data[parentKeys[PlayerName]]}</h1>

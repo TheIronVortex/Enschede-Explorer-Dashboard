@@ -4,7 +4,7 @@ import { ref, onValue } from "firebase/database";
 import db from "../FirebaseInit";
 
 function GetData() {
-  const { ParentKey, ValueName } = useParams(); 
+  const {ParentKey, ValueName} = useParams(); 
   const [parentKeys, setParentKeys] = useState([]);
   const [data, setData] = useState(null);
 

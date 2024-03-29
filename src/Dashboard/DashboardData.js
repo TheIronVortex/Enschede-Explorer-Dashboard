@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ref, onValue } from "firebase/database";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import db from "../FirebaseInit.js";
 import Row from "react-bootstrap/esm/Row";
 import Col from "react-bootstrap/esm/Col";
@@ -9,7 +9,6 @@ import BreadcrumbNav from "../Navbar/BreadcrumNav.js";
 
 function DashboardData() {
   const [parentKeys, setParentKeys] = useState([]);
-  const navigate = useNavigate(); // Get navigate function from React Router
 
   useEffect(() => {
     const testRef = ref(db);
@@ -26,11 +25,6 @@ function DashboardData() {
     };
   }, []); 
 
-  const handleItemClick = (key) => {
-    // Navigate to the next page with the key as a parameter
-    navigate(`/Data-Dashboard/${key}`);
-  };
-
   return (
     <>
       <Row>
@@ -45,7 +39,7 @@ function DashboardData() {
             {parentKeys.map((key, index) => (
               <ListGroup.Item key={index}>
                 {/* Trigger handleItemClick function on click */}
-                <a className="text-decoration-none text-dark d-block" onClick={() => handleItemClick(key)}>{key}</a>
+                <Link to={`/Data-Dashboard/${key}`} className="text-decoration-none text-dark d-block">{key}</Link>
               </ListGroup.Item>
             ))}
           </ListGroup>

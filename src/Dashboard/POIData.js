@@ -8,46 +8,56 @@ import BreadcrumbNav from "../Navbar/BreadcrumNav";
 import Form from "react-bootstrap/esm/Form";
 import { ref, set } from "firebase/database";
 import db from "../FirebaseInit";
-import OverviewInput from "./OverviewInput";
+import { Link, useParams } from 'react-router-dom';
+import Map from "./PoiMap";
 
+function POIData({selectedColor}) {
 
-function UserData() {
-
-  //const Cooldown = 0;
+  const { ParentKey } = useParams();
   var Description = 0;
   var Location = 1;
-  //const Ownership = 3;
   var PoiID = 2;
   var PoiName = 3;
   var PoiType = 4;
 
   const { parentKeys, data, ValueName } = GetData();
+  const [customLocation, setCustomLocation] = useState(() => null); // Initialize with null
   const [editableFields, setEditableFields] = useState({
     [parentKeys[2]]: false,
     [parentKeys[1]]: false,
   });
 
   if (parentKeys && parentKeys.includes("Ownership")) {
-    var Ownership = 2;
+
+    //var Ownership = 2;
     PoiID++;
     PoiName++;
     PoiType++;
   } 
 
+  if (parentKeys && parentKeys.includes("ImageLocation")) {
+    // eslint-disable-next-line
+    var ImageLocation = 1;
+    
+    Location++;
+    PoiID++;
+    PoiName++;
+    PoiType++;
+  }
+
   if (parentKeys && parentKeys.includes("Cooldowns")) {
-    var Cooldown = 0;
+
+    //var Cooldown = 0;
     Description++;
     Location++;
-    Ownership++;
+    // eslint-disable-next-line
+    ImageLocation++;
+    //Ownership++;
     PoiID++;
     PoiName++;
     PoiType++;
   } 
-  
-  //console.log(Cooldown, Description, Location, Ownership, PoiID, PoiName, PoiType)
-  
-  const cooldownKeys = data ? Object.keys(data[parentKeys[0]]) : [];
-  // const cooldownValues = data ? Object.values(data[parentKeys[0]]) : [];
+    
   const [editedValues, setEditedValues] = useState({
     [parentKeys[2]]: "",
     [parentKeys[1]]: "",
@@ -70,20 +80,28 @@ function UserData() {
 
   const saveData = (field, value) => {
     if (value !== undefined) {
-      // Update player name
-      if (field === parentKeys[2]) {
+
+      if (field === parentKeys[PoiName]) {
         //setParentKey(value); // Update parentKey state
       }
+      
       var inputData = value;
+      //console.log(value);
       const dataToUpdate = {};
       dataToUpdate[field] = inputData;
-      if (cooldownKeys.includes(field)) {
-        inputData = parseInt(value);
-        set(ref(db, `Users/${ValueName}/Progression/${field}`), inputData);
-      } else {
-        set(ref(db, `Users/${ValueName}/${field}`), inputData);
+      set(ref(db, `POIs/${ValueName}/${field}`), inputData);
+
+      if (field === parentKeys[Location]) {
+        const [lng, lat] = value.split(',').map(coord => parseFloat(coord.trim())); 
+        setCustomLocation([lat, lng]); 
       }
     }
+  };
+
+  const saveLocationData = () => {
+    const locationData = `${customLocation[1]}, ${customLocation[0]}`
+    console.log(`POIs/${ValueName}/Location`);
+    set(ref(db, `POIs/${ValueName}/Location`), locationData)
   };
 
   const handleInputChange = (field, value) => {
@@ -93,17 +111,23 @@ function UserData() {
     });
   };
 
-  /*
-  const handleSaveCooldown = () => {
-    // Save all cooldown keys and values
-    Object.keys(editedValues[parentKeys[0]]).forEach((key) => {
-      saveData(key, editedValues[parentKeys[0]][key]);
-    });
-    // Toggle edit mode for all cooldown keys
-    toggleEditMode(parentKeys[0]);
+  const handleLocationChange = (lngLat) => {
+    setCustomLocation(lngLat);
+    console.log(customLocation)
   };
-  */
-
+  
+  //Sent POI starting location to the map
+  useEffect(() => {
+    if (data !== null) {
+      setLoading(false);
+      const locationData = data[parentKeys[Location]]; 
+      if (locationData) {
+        const [lng, lat] = locationData.split(',').map(coord => parseFloat(coord.trim())); 
+        setCustomLocation([lat, lng]); 
+      }
+    }
+  }, [data, parentKeys, Location]);  
+  
   if (loading) {
     return <div>Fetching Data...</div>;
   }
@@ -115,28 +139,17 @@ function UserData() {
           <BreadcrumbNav />
         </Col>
       </Row>
-      {/*
-        <h1>{data && data.PoiName}</h1>
-        {data && (
-          <ListGroup>
-            {parentKeys.map((key, index) => (
-              <ListGroup.Item key={index}>
-                {key}: {typeof data[key] === "object" ? JSON.stringify(data[key]) : data[key]}
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
-        )}
-      */}
+
       <Row>
         <Col>
-          <Card className="p-5 bg-secondary rounded-5">
+          <Card className="p-5 card rounded-5">
             <Row>
               <Col>
                 <h1 className="pb-3 text-light">{data && data[parentKeys[PoiName]]}</h1>
               </Col>
             </Row>
             <Row>
-              <Col md className="bg-white rounded-start-5 p-3">
+              <Col md className="bg-white rounded-5 p-3">
                 <Form>
                   <Form.Group>
                     <Form.Label>{parentKeys[PoiID]}:</Form.Label>
@@ -148,11 +161,14 @@ function UserData() {
                         style={{ width: "95%" }}
                         defaultValue={data && data[parentKeys[PoiID]]}
                       />
+                      {parentKeys && parentKeys.includes("Ownership") && (
+                        <Button className="ms-2 btn-secondary" as={Link} to={`/Data-Dashboard/${ParentKey}/${ValueName}/Ownership`}>Ownership</Button>
+                      )}
                     </div>
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label>{parentKeys[PoiName]}:</Form.Label>
+                    <Form.Label>POI Name:</Form.Label>
                     <div className="d-flex align-items-center">
                       <Form.Control
                         disabled={!editableFields[parentKeys[PoiName]]}
@@ -186,9 +202,43 @@ function UserData() {
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label>{parentKeys[PoiType]}:</Form.Label>
+                    <Form.Label>Image Location:</Form.Label>
                     <div className="d-flex align-items-center">
                       <Form.Control
+                        disabled={!editableFields[parentKeys[ImageLocation]]}
+                        type="text"
+                        className="ms-4 bg-light"
+                        style={{ width: "95%" }}
+                        defaultValue={data && data[parentKeys[ImageLocation]]}
+                        onChange={(e) =>
+                          handleInputChange(
+                            parentKeys[ImageLocation],
+                            e.target.value
+                          )
+                        }
+                      />
+                      <Button
+                        variant="secondary"
+                        className="ms-2"
+                        onClick={() => {
+                          if (editableFields[parentKeys[ImageLocation]]) {
+                            saveData(
+                              parentKeys[ImageLocation],
+                              editedValues[parentKeys[ImageLocation]]
+                            );
+                          }
+                          toggleEditMode(parentKeys[ImageLocation]);
+                        }}
+                      >
+                        {editableFields[parentKeys[ImageLocation]] ? "Save" : "Edit"}
+                      </Button>
+                    </div>
+                  </Form.Group>
+
+                  <Form.Group>
+                    <Form.Label>POI Type:</Form.Label>
+                    <div className="d-flex align-items-center">
+                      <Form.Select                         
                         disabled={!editableFields[parentKeys[PoiType]]}
                         type="text"
                         className="ms-4 bg-light"
@@ -200,63 +250,39 @@ function UserData() {
                             e.target.value
                           )
                         }
-                      />
-                      <Button
-                        variant="secondary"
-                        className="ms-2"
-                        onClick={() => {
-                          if (editableFields[parentKeys[PoiType]]) {
-                            saveData(
-                              parentKeys[PoiType],
-                              editedValues[parentKeys[PoiType]]
-                            );
-                          }
-                          toggleEditMode(parentKeys[PoiType]);
-                        }}
                       >
-                        {editableFields[parentKeys[PoiType]] ? "Save" : "Edit"}
-                      </Button>
+                        <option value={0}>General</option>
+                        <option value={1}>History</option>
+                        <option value={2}>Leisure</option>
+                      </Form.Select>
+
+                      <Button
+                          variant="secondary"
+                          className="ms-2"
+                          onClick={() => {
+                            if (editableFields[parentKeys[PoiType]]) {
+                              saveData(
+                                parentKeys[PoiType],
+                                editedValues[parentKeys[PoiType]]
+                              );
+                            }
+                            toggleEditMode(parentKeys[PoiType]);
+                          }}
+                        >
+                          {editableFields[parentKeys[PoiType]] ? "Save" : "Edit"}
+                        </Button>
+                      </div>
+                  </Form.Group>
+
+                  <Form.Group>
+                    <Form.Label>Location:</Form.Label>
+                    <div>
+                      <Map customLocation={customLocation} onLocationChange={handleLocationChange} locationSave={saveLocationData}/>
                     </div>
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label>{parentKeys[Location]}:</Form.Label>
-                    <div className="d-flex align-items-center">
-                      <Form.Control
-                        disabled={!editableFields[parentKeys[Location]]}
-                        type="text"
-                        className="ms-4 bg-light"
-                        style={{ width: "95%" }}
-                        defaultValue={data && data[parentKeys[Location]]}
-                        onChange={(e) =>
-                          handleInputChange(
-                            parentKeys[Location],
-                            e.target.value
-                          )
-                        }
-                      />
-                      <Button
-                        variant="secondary"
-                        className="ms-2"
-                        onClick={() => {
-                          if (editableFields[parentKeys[Location]]) {
-                            saveData(
-                              parentKeys[Location],
-                              editedValues[parentKeys[Location]]
-                            );
-                          }
-                          toggleEditMode(parentKeys[Location]);
-                        }}
-                      >
-                        {editableFields[parentKeys[Location]] ? "Save" : "Edit"}
-                      </Button>
-                    </div>
-                  </Form.Group>
-
-                  
-
-                  <Form.Group>
-                    <Form.Label>{parentKeys[Description]}:</Form.Label>
+                    <Form.Label>Description:</Form.Label>
                     <div className="d-flex align-items-center">
                       <textarea
                         disabled={!editableFields[parentKeys[Description]]}
@@ -297,4 +323,4 @@ function UserData() {
   );
 }
 
-export default UserData;
+export default POIData;
