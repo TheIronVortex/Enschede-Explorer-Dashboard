@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { ref, onValue } from 'firebase/database';
-import db from './FirebaseInit';
+import {db} from './FirebaseInit';
 
 function MapOverview() {
   const mapContainerRef = useRef(null);

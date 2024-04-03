@@ -1,5 +1,7 @@
+/* Enschede Color: #e20d18 */
 :root {
   --primary-color: #e20d18;
+  --text-color: #000000;
 }
 
 .card {
@@ -9,4 +11,8 @@
 .btn {
   background-color: var(--primary-color) !important;
   border-color: var(--primary-color) !important; 
+}
+
+.text-custom {
+  color: var(--text-color) !important;
 }

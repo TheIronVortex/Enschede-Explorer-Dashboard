@@ -6,11 +6,13 @@ import Col from "react-bootstrap/esm/Col";
 import Card from "react-bootstrap/esm/Card";
 import BreadcrumbNav from "../Navbar/BreadcrumNav";
 import Form from "react-bootstrap/esm/Form";
-import { ref, set } from "firebase/database";
-import db from "../FirebaseInit";
+import { ref, set, get, child, update } from "firebase/database";
+import { db, auth} from "../FirebaseInit";
+import { useNavigate } from 'react-router-dom';
+import 'firebase/database';
 
 
-function UserData({selectedColor}) {
+function UserData({selectedColor, selectedTextColor}) {
   //const Character = 0;
   const Description = 1;
   // eslint-disable-next-line 
@@ -19,7 +21,7 @@ function UserData({selectedColor}) {
   const Progression = 4;
   const UserID = 5;
 
-
+  const navigate = useNavigate();
   const { parentKeys, data, ValueName } = GetData();
   const [editableFields, setEditableFields] = useState({
     [parentKeys[2]]: false,
@@ -48,12 +50,54 @@ function UserData({selectedColor}) {
     });
   };
 
+  //console.log(data && data[parentKeys[UserID]]);     
+
   const saveData = (field, value) => {
     if (value !== undefined) {
       // Update player name
-      if (field === parentKeys[2]) {
-        //setParentKey(value); // Update parentKey state
+      console.log(field + parentKeys[PlayerName])
+      if (field === parentKeys[PlayerName]) {
+        //const parentRef = ref(db, 'Users');
+        const newValue = value.trim();
+        const oldKey = ValueName; // Assuming ValueName holds the old key of the user
+        const newKey = newValue;
+
+        console.log(auth)
+        const user = undefined;
+        if (user) {
+          
+          user.updateProfile({
+            displayName: newValue
+          }).then(() => {
+            console.log("User display name updated successfully");
+
+            const parentRef = ref(db, 'Users'); 
+            get(child(parentRef, oldKey)).then((snapshot) => {
+              if (snapshot.exists()) {
+                //const data = snapshot.val();
+                update({
+                  [`Users/${newKey}/${field}`]: value
+                }).then(() => {
+                  console.log("User entry updated successfully");
+                  navigate(`/User-Dashboard/Users/${newKey}`); 
+                  window.location.reload();
+                }).catch((error) => {
+                  console.error("Error updating user entry: ", error);
+                });
+              } else {
+                console.error("User data not found for ", oldKey);
+              }
+            }).catch((error) => {
+              console.error("Error getting user data: ", error);
+            });
+          }).catch((error) => {
+            console.error("Error updating user display name: ", error);
+          });
+        } else {
+          console.error("No user is currently signed in");
+        }
       }
+
       var inputData = value;
       const dataToUpdate = {};
       dataToUpdate[field] = inputData;
@@ -74,12 +118,9 @@ function UserData({selectedColor}) {
   };
 
   const handleSaveProgress = () => {
-    // Save all progress keys and values
     Object.keys(editedValues[parentKeys[Progression]]).forEach((key) => {
       saveData(key, editedValues[parentKeys[Progression]][key]);
     });
-    // Toggle edit mode for all progress keys
-    toggleEditMode(parentKeys[Progression]);
   };
 
   if (loading) {
@@ -93,24 +134,12 @@ function UserData({selectedColor}) {
           <BreadcrumbNav />
         </Col>
       </Row>
-      {/*
-        <h1>{data && data.PoiName}</h1>
-        {data && (
-          <ListGroup>
-            {parentKeys.map((key, index) => (
-              <ListGroup.Item key={index}>
-                {key}: {typeof data[key] === "object" ? JSON.stringify(data[key]) : data[key]}
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
-        )}
-      */}
       <Row>
         <Col>
-          <Card className="p-5 card rounded-5">
+          <Card className="p-5 card rounded-5" style={{ '--primary-color': selectedColor, '--text-color': selectedTextColor }}>
             <Row>
               <Col>
-                <h1 className="pb-3 text-light">{data && data[parentKeys[PlayerName]]}</h1>
+                <h1 className="pb-3 text-custom">{data && data[parentKeys[PlayerName]]}</h1>
               </Col>
             </Row>
             <Row>
@@ -147,7 +176,7 @@ function UserData({selectedColor}) {
                       />
                       <Button
                         variant="secondary"
-                        className="ms-2"
+                        className="ms-2 text-custom"
                         onClick={() => {
                           if (editableFields[parentKeys[PlayerName]]) {
                             saveData(
@@ -180,7 +209,7 @@ function UserData({selectedColor}) {
                       ></textarea>
                       <Button
                         variant="secondary"
-                        className="ms-2"
+                        className="ms-2 text-custom"
                         onClick={() => {
                           if (editableFields[parentKeys[Description]]) {
                             saveData(
@@ -226,9 +255,10 @@ function UserData({selectedColor}) {
                     <Col md={2} className="p-3 align-self-end">
                       <Button
                         variant="secondary"
-                        className="mt-2"
+                        className="mt-2 text-custom"
                         onClick={() => {
-                          if (editableFields[parentKeys[Progression]]) {
+                          console.log(editedValues[parentKeys[Progression]]);
+                          if (editableFields[parentKeys[Progression]] && editedValues[parentKeys[Progression]] !== undefined ) {
                             handleSaveProgress();
                           }
                           toggleEditMode(parentKeys[Progression]);

@@ -5,7 +5,7 @@ import RouteData from "./RouteData";
 import ShopData from "./ShopData";
 import UserData from "./UserData";
 
-function DataOverview() {
+function DataOverview({selectedColor, selectedTextColor}) {
 
   const { ParentKey } = useParams(); // Access the key from URL params
   //console.log(ParentKey);
@@ -13,16 +13,16 @@ function DataOverview() {
 
   switch( ParentKey ){
     case "POIs":
-      ParentKeyValue = <POIData />
+      ParentKeyValue = <POIData selectedColor={selectedColor} selectedTextColor={selectedTextColor}/>
       break;
     case "Routes":
-      ParentKeyValue = <RouteData />
+      ParentKeyValue = <RouteData selectedColor={selectedColor} selectedTextColor={selectedTextColor}/>
       break;
     case "Shop":
-      ParentKeyValue = <ShopData />
+      ParentKeyValue = <ShopData selectedColor={selectedColor} selectedTextColor={selectedTextColor}/>
       break;
     case "Users":
-      ParentKeyValue = <UserData />
+      ParentKeyValue = <UserData selectedColor={selectedColor} selectedTextColor={selectedTextColor}/>
       break;
     default:
   }

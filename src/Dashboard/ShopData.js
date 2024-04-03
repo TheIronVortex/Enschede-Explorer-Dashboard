@@ -7,10 +7,10 @@ import Card from "react-bootstrap/esm/Card";
 import BreadcrumbNav from "../Navbar/BreadcrumNav";
 import Form from "react-bootstrap/esm/Form";
 import { ref, set } from "firebase/database";
-import db from "../FirebaseInit";
+import {db} from "../FirebaseInit";
 
 
-function UserData({selectedColor}) {
+function UserData({selectedColor, selectedTextColor}) {
   const Category = 0
   const ItemID = 1
   const ItemName = 2
@@ -87,10 +87,10 @@ function UserData({selectedColor}) {
       */}
       <Row>
         <Col>
-          <Card className="p-5 card rounded-5">
+          <Card className="p-5 card rounded-5" style={{ '--primary-color': selectedColor, '--text-color': selectedTextColor }}>
             <Row>
               <Col>
-                <h1 className="pb-3 text-light">{data && data[parentKeys[ItemName]]}</h1>
+                <h1 className="pb-3 text-custom">{data && data[parentKeys[ItemName]]}</h1>
               </Col>
             </Row>
             <Row>
@@ -127,7 +127,7 @@ function UserData({selectedColor}) {
                       />
                       <Button
                         variant="secondary"
-                        className="ms-2"
+                        className="ms-2 text-custom"
                         onClick={() => {
                           if (editableFields[parentKeys[ItemName]]) {
                             saveData(
@@ -161,7 +161,7 @@ function UserData({selectedColor}) {
                       />
                       <Button
                         variant="secondary"
-                        className="ms-2"
+                        className="ms-2 text-custom"
                         onClick={() => {
                           if (editableFields[parentKeys[Category]]) {
                             saveData(
@@ -195,7 +195,7 @@ function UserData({selectedColor}) {
                       />
                       <Button
                         variant="secondary"
-                        className="ms-2"
+                        className="ms-2 text-custom"
                         onClick={() => {
                           if (editableFields[parentKeys[Price]]) {
                             saveData(

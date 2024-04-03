@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DashboardData from "./Dashboard/DashboardData";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import NotFoundPage from "./NotFoundPage";
@@ -11,9 +11,14 @@ import Customize from "./Customize/Customize";
 import "./Customize/style.css";
 
 function Main() {
-  const [selectedColor, setSelectedColor] = useState('#e20d18'); // Initial color
- 
-  console.log(selectedColor)
+  const [selectedColor, setSelectedColor] = useState('');
+  const [selectedTextColor, setSelectedTextColor] = useState('');
+  
+  useEffect(() => {
+    setSelectedColor(localStorage.getItem('selectedColorPrimary'));
+    setSelectedTextColor(localStorage.getItem('selectedTextColor'));
+  }, []);
+
   return (
     <Router>
       <Routes>
@@ -22,10 +27,10 @@ function Main() {
         <Route path="/Data-Dashboard"> 
           <Route index element={<DashboardData />} />
           <Route path=":ParentKey" element={<SpecificDataPage />} />
-          <Route path=":ParentKey/:ValueName" element={<DataOverview selectedColor={selectedColor}/>} />
-          <Route path=":ParentKey/:ValueName/Ownership" element={<OwnershipData selectedColor={selectedColor}/>} />
+          <Route path=":ParentKey/:ValueName" element={<DataOverview selectedColor={selectedColor} selectedTextColor={selectedTextColor}/> } />
+          <Route path=":ParentKey/:ValueName/Ownership" element={<OwnershipData selectedColor={selectedColor} selectedTextColor={selectedTextColor}/>} />
         </Route>
-        <Route path="/Customize" element={<Customize selectedColor={selectedColor} setSelectedColor={setSelectedColor} />} />
+        <Route path="/Customize" element={<Customize setSelectedColor={setSelectedColor} setSelectedTextColor={setSelectedTextColor} />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>

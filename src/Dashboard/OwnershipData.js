@@ -4,10 +4,10 @@ import GetData from "./GatherData";
 import Form from "react-bootstrap/esm/Form";
 import { useEffect, useState } from "react";
 import { onValue, ref, set } from "firebase/database";
-import db from "../FirebaseInit";
+import {db} from "../FirebaseInit";
 
 
-function OwnershipData({selectedColor}) {
+function OwnershipData({selectedColor, selectedTextColor}) {
 
   const {data, ValueName} = GetData();
   const ownershipData = data && data['Ownership'];
@@ -118,10 +118,10 @@ function OwnershipData({selectedColor}) {
 
       <Row>
         <Col>
-          <Card className="p-5 card rounded-5" style={{ '--primary-color': selectedColor }}>
+          <Card className="p-5 card rounded-5" style={{ '--primary-color': selectedColor, '--text-color': selectedTextColor }}>
             <Row>
               <Col>
-                <h1 className="pb-3 text-light">Ownership: {ValueName} </h1>
+                <h1 className="pb-3 text-custom">Ownership: {ValueName} </h1>
               </Col>
             </Row>
             <Row>
@@ -156,7 +156,7 @@ function OwnershipData({selectedColor}) {
                       </Form.Select>
                       <Button
                         variant="secondary"
-                        className="ms-2"
+                        className="ms-2 text-custom"
                         style={{ '--primary-color': selectedColor }}
                         onClick={() => {
                           if (editableFields["currentOwner"]) {
@@ -185,7 +185,7 @@ function OwnershipData({selectedColor}) {
                       />
                       <Button
                         variant="secondary"
-                        className="ms-2"
+                        className="ms-2 text-custom"
                         style={{ '--primary-color': selectedColor }}
                         onClick={() => {
                           if (editableFields["interactionCount"]) {
@@ -233,7 +233,7 @@ function OwnershipData({selectedColor}) {
                           />
                           <Button
                             variant="secondary"
-                            className="ms-2"
+                            className="ms-2 text-custom"
                             style={{ '--primary-color': selectedColor }}
                             onClick={() => {
                               if (editableFields["damageData"]) {
@@ -301,7 +301,7 @@ function OwnershipData({selectedColor}) {
                           />
                           <Button
                             variant="secondary"
-                            className="ms-2"
+                            className="ms-2 text-custom"
                             style={{ '--primary-color': selectedColor }}
                             onClick={() => {
                               if (editableFields["healthData"]) {
@@ -386,7 +386,7 @@ function OwnershipData({selectedColor}) {
                           />
                           <Button
                             variant="secondary"
-                            className="ms-2"
+                            className="ms-2 text-custom"
                             style={{ '--primary-color': selectedColor }}
                             onClick={() => {
                               if (editableFields["rewardsData"]) {

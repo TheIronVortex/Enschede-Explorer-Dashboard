@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { ref, onValue } from "firebase/database";
-import db from "../FirebaseInit";
+import {db} from "../FirebaseInit";
 
 function GetData() {
   const {ParentKey, ValueName} = useParams(); 

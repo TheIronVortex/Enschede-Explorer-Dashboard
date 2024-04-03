@@ -6,12 +6,13 @@ import Col from "react-bootstrap/esm/Col";
 import Card from "react-bootstrap/esm/Card";
 import BreadcrumbNav from "../Navbar/BreadcrumNav";
 import Form from "react-bootstrap/esm/Form";
-import { ref, set } from "firebase/database";
-import db from "../FirebaseInit";
+import { ref, set, get, child } from "firebase/database";
+import {db} from "../FirebaseInit";
 import { Link, useParams } from 'react-router-dom';
 import Map from "./PoiMap";
+import { useNavigate } from 'react-router-dom';
 
-function POIData({selectedColor}) {
+function POIData({selectedColor, selectedTextColor}) {
 
   const { ParentKey } = useParams();
   var Description = 0;
@@ -20,8 +21,10 @@ function POIData({selectedColor}) {
   var PoiName = 3;
   var PoiType = 4;
 
+  const navigate = useNavigate();
   const { parentKeys, data, ValueName } = GetData();
-  const [customLocation, setCustomLocation] = useState(() => null); // Initialize with null
+  const [customLocation, setCustomLocation] = useState(() => null); 
+  const [customStartLocation, setCustomStartLocation] = useState();
   const [editableFields, setEditableFields] = useState({
     [parentKeys[2]]: false,
     [parentKeys[1]]: false,
@@ -80,28 +83,58 @@ function POIData({selectedColor}) {
 
   const saveData = (field, value) => {
     if (value !== undefined) {
-
       if (field === parentKeys[PoiName]) {
-        //setParentKey(value); // Update parentKey state
+        const parentRef = ref(db, 'POIs');
+        const newValue = value.trim();
+        const oldKey = ValueName;
+        const newKey = newValue;
+  
+        get(child(parentRef, oldKey)).then((snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            set(child(parentRef, oldKey), null)
+              .then(() => {
+                set(child(parentRef, newKey), data)
+                  .then(() => {
+                    console.log("Parent entry updated successfully");
+                    set(ref(db, `POIs/${newKey}/${field}`), value);
+                    navigate(`/Data-Dashboard/POIs/${newKey}`);
+                    window.location.reload();
+                  })
+                  .catch((error) => {
+                    console.error("Error updating parent entry: ", error);
+                  });
+              })
+              .catch((error) => {
+                console.error("Error removing old entry: ", error);
+              });
+          } else {
+            console.error("POI data not found for ", oldKey);
+          }
+        }).catch((error) => {
+          console.error("Error getting POI data: ", error);
+        });
       }
-      
+  
       var inputData = value;
-      //console.log(value);
       const dataToUpdate = {};
       dataToUpdate[field] = inputData;
       set(ref(db, `POIs/${ValueName}/${field}`), inputData);
-
+  
       if (field === parentKeys[Location]) {
         const [lng, lat] = value.split(',').map(coord => parseFloat(coord.trim())); 
         setCustomLocation([lat, lng]); 
       }
     }
   };
+  
+  
 
   const saveLocationData = () => {
     const locationData = `${customLocation[1]}, ${customLocation[0]}`
-    console.log(`POIs/${ValueName}/Location`);
     set(ref(db, `POIs/${ValueName}/Location`), locationData)
+    //Workaround for map reload
+    window.location.reload();
   };
 
   const handleInputChange = (field, value) => {
@@ -113,7 +146,7 @@ function POIData({selectedColor}) {
 
   const handleLocationChange = (lngLat) => {
     setCustomLocation(lngLat);
-    console.log(customLocation)
+    //console.log(customLocation)
   };
   
   //Sent POI starting location to the map
@@ -123,7 +156,7 @@ function POIData({selectedColor}) {
       const locationData = data[parentKeys[Location]]; 
       if (locationData) {
         const [lng, lat] = locationData.split(',').map(coord => parseFloat(coord.trim())); 
-        setCustomLocation([lat, lng]); 
+        setCustomStartLocation([lat, lng]); 
       }
     }
   }, [data, parentKeys, Location]);  
@@ -142,10 +175,10 @@ function POIData({selectedColor}) {
 
       <Row>
         <Col>
-          <Card className="p-5 card rounded-5">
+          <Card className="p-5 card rounded-5" style={{ '--primary-color': selectedColor, '--text-color': selectedTextColor }}>
             <Row>
               <Col>
-                <h1 className="pb-3 text-light">{data && data[parentKeys[PoiName]]}</h1>
+                <h1 className="pb-3 text-custom">{data && data[parentKeys[PoiName]]}</h1>
               </Col>
             </Row>
             <Row>
@@ -162,7 +195,7 @@ function POIData({selectedColor}) {
                         defaultValue={data && data[parentKeys[PoiID]]}
                       />
                       {parentKeys && parentKeys.includes("Ownership") && (
-                        <Button className="ms-2 btn-secondary" as={Link} to={`/Data-Dashboard/${ParentKey}/${ValueName}/Ownership`}>Ownership</Button>
+                        <Button className="ms-2 text-custom" as={Link} to={`/Data-Dashboard/${ParentKey}/${ValueName}/Ownership`}>Ownership</Button>
                       )}
                     </div>
                   </Form.Group>
@@ -185,7 +218,7 @@ function POIData({selectedColor}) {
                       />
                       <Button
                         variant="secondary"
-                        className="ms-2"
+                        className="ms-2 text-custom"
                         onClick={() => {
                           if (editableFields[parentKeys[PoiName]]) {
                             saveData(
@@ -219,7 +252,7 @@ function POIData({selectedColor}) {
                       />
                       <Button
                         variant="secondary"
-                        className="ms-2"
+                        className="ms-2 text-custom"
                         onClick={() => {
                           if (editableFields[parentKeys[ImageLocation]]) {
                             saveData(
@@ -258,7 +291,7 @@ function POIData({selectedColor}) {
 
                       <Button
                           variant="secondary"
-                          className="ms-2"
+                          className="ms-2 text-custom"
                           onClick={() => {
                             if (editableFields[parentKeys[PoiType]]) {
                               saveData(
@@ -277,7 +310,7 @@ function POIData({selectedColor}) {
                   <Form.Group>
                     <Form.Label>Location:</Form.Label>
                     <div>
-                      <Map customLocation={customLocation} onLocationChange={handleLocationChange} locationSave={saveLocationData}/>
+                      <Map customStartLocation={customStartLocation} onLocationChange={handleLocationChange} locationSave={saveLocationData}/>
                     </div>
                   </Form.Group>
 
@@ -298,7 +331,7 @@ function POIData({selectedColor}) {
                       ></textarea>
                       <Button
                         variant="secondary"
-                        className="ms-2"
+                        className="ms-2 text-custom"
                         onClick={() => {
                           if (editableFields[parentKeys[Description]]) {
                             saveData(

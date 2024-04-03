@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ref, onValue } from "firebase/database";
 import { Link } from "react-router-dom";
-import db from "../FirebaseInit.js";
+import {db} from "../FirebaseInit.js";
 import Row from "react-bootstrap/esm/Row";
 import Col from "react-bootstrap/esm/Col";
 import { ListGroup } from "react-bootstrap";
