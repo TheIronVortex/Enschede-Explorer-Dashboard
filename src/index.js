@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import CustomNavbar from './Navbar/Navbar';
 import Main from './main';
 import reportWebVitals from './reportWebVitals';
 import Container from 'react-bootstrap/esm/Container';
@@ -11,7 +10,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Container>
-    <CustomNavbar />
     <Main />
   </Container>
 );

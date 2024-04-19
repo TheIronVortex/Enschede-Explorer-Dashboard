@@ -7,7 +7,7 @@ import Col from "react-bootstrap/esm/Col";
 import { ListGroup, Form } from 'react-bootstrap';
 import BreadcrumbNav from '../Navbar/BreadcrumNav.js';
 
-function SpecificDataPage({selectedColor}) {
+function SpecificDataPage({selectedColor, selectedTextColor}) {
   const { ParentKey } = useParams(); // Access the key from URL params
 
   const [parentKeys, setParentKeys] = useState([]);
@@ -48,9 +48,9 @@ function SpecificDataPage({selectedColor}) {
           <BreadcrumbNav />
         </Col>
       </Row>
-      <Row>
+      <Row style={{ '--primary-color': selectedColor, '--text-color': selectedTextColor }}>
         <Col>
-          <h1>Receive Specific Data:</h1>
+          <h1>Realtime Database:</h1>
           <Row>
             <Col>
               <Form.Group className="mb-3">
@@ -59,18 +59,26 @@ function SpecificDataPage({selectedColor}) {
                   placeholder="Search"
                   value={searchTerm}
                   onChange={handleSearchChange}
-                />
+                />        
               </Form.Group>
             </Col>
             <Col>
-
+              {ParentKey !== 'Users' && (
+                <Link 
+                  className='btn text-custom'
+                  to={`/Data-Dashboard/${ParentKey}/New`}
+                >Add new {ParentKey}</Link>
+              )}
             </Col>
           </Row>
           <ListGroup>
             {filteredKeys.map((key, index) => (
               <ListGroup.Item key={index}>
                 {/* Trigger handleItemClick function on click */}
-                <Link to={`/Data-Dashboard/${ParentKey}/${key}`} className="text-decoration-none text-dark d-block" >{key}</Link>
+                <Link 
+                  to={`/Data-Dashboard/${ParentKey}/${key}`} 
+                  className="text-decoration-none text-dark d-block" 
+                >{key}</Link>
               </ListGroup.Item>
             ))}
           </ListGroup>

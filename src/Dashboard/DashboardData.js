@@ -34,7 +34,7 @@ function DashboardData() {
       </Row>
       <Row>
         <Col>
-          <h1>Receive Data:</h1>
+          <h1>Realtime Database:</h1>
           <ListGroup>
             {parentKeys.map((key, index) => (
               <ListGroup.Item key={index}>

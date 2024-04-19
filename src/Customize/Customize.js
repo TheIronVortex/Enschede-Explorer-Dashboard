@@ -56,8 +56,8 @@ function Customize({ setSelectedColor, setSelectedTextColor }) {
               </Row>
             </Col>
             <Col>
-              <Button className='btn'  onClick={resetColor}>Reset</Button>
-            </Col>
+              <Button className='text-custom'  onClick={resetColor}>Reset</Button>
+            </Col> 
           </Row>
         </div>
       </Card>

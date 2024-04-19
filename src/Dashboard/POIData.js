@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import GetData from "./GatherData";
-import { Button } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import Row from "react-bootstrap/esm/Row";
 import Col from "react-bootstrap/esm/Col";
 import Card from "react-bootstrap/esm/Card";
 import BreadcrumbNav from "../Navbar/BreadcrumNav";
 import Form from "react-bootstrap/esm/Form";
-import { ref, set, get, child } from "firebase/database";
+import { ref, set, get, child, remove } from "firebase/database";
 import {db} from "../FirebaseInit";
 import { Link, useParams } from 'react-router-dom';
 import Map from "./PoiMap";
@@ -29,6 +29,7 @@ function POIData({selectedColor, selectedTextColor}) {
     [parentKeys[2]]: false,
     [parentKeys[1]]: false,
   });
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   if (parentKeys && parentKeys.includes("Ownership")) {
 
@@ -127,8 +128,6 @@ function POIData({selectedColor, selectedTextColor}) {
       }
     }
   };
-  
-  
 
   const saveLocationData = () => {
     const locationData = `${customLocation[1]}, ${customLocation[0]}`
@@ -164,6 +163,23 @@ function POIData({selectedColor, selectedTextColor}) {
   if (loading) {
     return <div>Fetching Data...</div>;
   }
+
+  function confirmDelete() {
+    setShowConfirmation(!showConfirmation);
+  };
+  
+  function deletePoi() {
+    const parentRef = ref(db, `POIs/${ValueName}`);
+    
+    remove(parentRef)
+      .then(() => {
+        console.log('POI deleted successfully');
+        navigate(`/Data-Dashboard/POIs`)
+      })
+      .catch((error) => {
+        console.error('Error deleting POI: ', error);
+      });
+  };
   
   return (
     <>
@@ -349,9 +365,30 @@ function POIData({selectedColor, selectedTextColor}) {
                 </Form>
               </Col>
             </Row>
+            <Row>
+              <Col>
+                <Button className="text-custom text-decoration-none" onClick={confirmDelete}>Delete POI</Button>
+              </Col>
+            </Row>
           </Card>
         </Col>
       </Row>
+
+      {/* Confirmation Modal */}
+      <Modal show={showConfirmation} onHide={confirmDelete}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Delete</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to delete this POI?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={confirmDelete}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={deletePoi}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }
