@@ -12,15 +12,17 @@ import DashboardData from "./Dashboard/DashboardData";
 import "./Customize/style.css";
 import Login from "./LoginPage";
 import CustomNavbar from './Navbar/Navbar';
-import { auth, db } from './FirebaseInit';
-import { get, ref } from "firebase/database";
+import { auth } from './FirebaseInit';
+import Documentation from "./Documentation/Documentation";
+//import { get, ref } from "firebase/database";
 
 function Main() {
   const [selectedColor, setSelectedColor] = useState('');
   const [selectedTextColor, setSelectedTextColor] = useState('');
+  // eslint-disable-next-line
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
+  //const [loading, setLoading] = useState(true);
+  //const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
@@ -34,7 +36,7 @@ function Main() {
   useEffect(() => {
     setSelectedColor(localStorage.getItem('selectedColorPrimary'));
     setSelectedTextColor(localStorage.getItem('selectedTextColor'));
-    
+    /*
     if (user) {
       get(ref(db, `Users/${user.displayName}`))
         .then(snapshot => {
@@ -44,9 +46,12 @@ function Main() {
         .catch(error => {
           console.error("Error getting user data from Realtime Database:", error);
         });
-    } 
-  }, [user]);
-
+    } else {
+      setLoading(false)
+    }
+    */
+  }, []);
+/*
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -58,7 +63,7 @@ function Main() {
       </Router>
     )
   }
-
+*/
   return (
     <>
       <CustomNavbar selectedColor={selectedColor} selectedTextColor={selectedTextColor}/>
@@ -67,6 +72,7 @@ function Main() {
           <Route path="/" element={<HomePage />} />
           <Route path="/Login" element={<Login selectedColor={selectedColor} selectedTextColor={selectedTextColor} />} />
           <Route path="/Map" element={<MapOverview />} />
+          <Route path="/Documentation" element={<Documentation />} />
           <Route path="/Data-Dashboard"> 
             <Route index element={<DashboardData selectedColor={selectedColor} selectedTextColor={selectedTextColor} />} />
             <Route path=":ParentKey" element={<SpecificDataPage selectedColor={selectedColor} selectedTextColor={selectedTextColor} />} />

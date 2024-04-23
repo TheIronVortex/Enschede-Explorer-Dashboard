@@ -13,16 +13,25 @@ import 'firebase/database';
 
 
 function UserData({selectedColor, selectedTextColor}) {
-  //const Character = 0;
-  const Description = 1;
-  // eslint-disable-next-line 
-  const Inventroy = 2
-  const PlayerName = 3;
-  const Progression = 4;
-  const UserID = 5;
+  //var Character = 0;
+  var Description = 1;
+  //eslint-disable-next-line 
+  //var Inventroy = 2
+  var PlayerName = 3;
+  var Progression = 4;
+  var UserID = 5;
 
   const navigate = useNavigate();
   const { parentKeys, data, ValueName } = GetData();
+  if (parentKeys.includes('Admin')) {
+    //const Admin = 0 
+    //Character ++;
+    Description ++;
+    //Inventroy ++;
+    PlayerName ++;
+    Progression ++;
+    UserID ++;
+  }
   const [editableFields, setEditableFields] = useState({
     [parentKeys[2]]: false,
     [parentKeys[1]]: false,

@@ -8,6 +8,7 @@ import BreadcrumbNav from "../Navbar/BreadcrumNav";
 import Form from "react-bootstrap/esm/Form";
 import { ref, set } from "firebase/database";
 import {db} from "../FirebaseInit";
+import RouteMap from "./RouteMap";
 
 
 function UserData({selectedColor, selectedTextColor}) {
@@ -179,7 +180,8 @@ function UserData({selectedColor, selectedTextColor}) {
                       </Button>
                     </div>
                   </Form.Group>
-
+                  {//<RouteMap PoiList={data && data[parentKeys[PoiIDList]]} />
+                  }
                   <Form.Group>
                     <Form.Label>{parentKeys[RouteDistance]}:</Form.Label>
                     <div className="d-flex align-items-center">

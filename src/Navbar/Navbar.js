@@ -43,6 +43,9 @@ function CustomNavbar({ selectedColor, selectedTextColor }) {
               <Nav.Link className="nav-link" activeclassname="active" href="/Data-Dashboard">Data Dashboard</Nav.Link>
             </Nav.Item>
             <Nav.Item>
+              <Nav.Link className="nav-link" activeclassname="active" href="/Documentation">Documentation</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
               <Nav.Link className="nav-link" activeclassname="active" href="/Customize">Customize Website</Nav.Link>
             </Nav.Item>
             {!loading && user ? (
