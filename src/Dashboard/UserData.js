@@ -13,25 +13,39 @@ import 'firebase/database';
 
 
 function UserData({selectedColor, selectedTextColor}) {
+  const navigate = useNavigate();
+  const { parentKeys, data, ValueName } = GetData(); 
+
+  const Character = data && data['Character'];
+  const Description = data && data['Description'];
+  const Inventory = data && data['Inventory'];
+  const PlayerName = data && data['PlayerName'];
+  const Progression = data && data['Progression'];
+  const UserID = data && data['UserID'];
+  console.log(Description, "|", PlayerName, "|", Progression, "|", UserID);
+
   //var Character = 0;
-  var Description = 1;
+  //var Description = 1;
   //eslint-disable-next-line 
   //var Inventroy = 2
-  var PlayerName = 3;
-  var Progression = 4;
-  var UserID = 5;
+  //var PlayerName = 3;
+  //var Progression = 4;
+  //var UserID = 5;
 
-  const navigate = useNavigate();
-  const { parentKeys, data, ValueName } = GetData();
   if (parentKeys.includes('Admin')) {
     //const Admin = 0 
     //Character ++;
-    Description ++;
+    //Description ++;
     //Inventroy ++;
-    PlayerName ++;
-    Progression ++;
-    UserID ++;
+    //PlayerName ++;
+    //Progression ++;
+    //UserID ++;
   }
+
+  if (parentKeys.includes('Achievements')) {
+
+  }
+
   const [editableFields, setEditableFields] = useState({
     [parentKeys[2]]: false,
     [parentKeys[1]]: false,
@@ -64,8 +78,8 @@ function UserData({selectedColor, selectedTextColor}) {
   const saveData = (field, value) => {
     if (value !== undefined) {
       // Update player name
-      console.log(field + parentKeys[PlayerName])
-      if (field === parentKeys[PlayerName]) {
+      console.log(field + 'PlayerName')
+      if (field === 'PlayerName') {
         //const parentRef = ref(db, 'Users');
         const newValue = value.trim();
         const oldKey = ValueName; // Assuming ValueName holds the old key of the user
@@ -125,13 +139,13 @@ function UserData({selectedColor, selectedTextColor}) {
       [field]: value,
     });
   };
-
+/*
   const handleSaveProgress = () => {
-    Object.keys(editedValues[parentKeys[Progression]]).forEach((key) => {
-      saveData(key, editedValues[parentKeys[Progression]][key]);
+    Object.keys(editedValues['Progression']).forEach((key) => {
+      saveData(key, editedValues['Progression'][key]);
     });
   };
-
+*/
   if (loading) {
     return <div>Fetching Data...</div>;
   }
@@ -148,37 +162,37 @@ function UserData({selectedColor, selectedTextColor}) {
           <Card className="p-5 card rounded-5" style={{ '--primary-color': selectedColor, '--text-color': selectedTextColor }}>
             <Row>
               <Col>
-                <h1 className="pb-3 text-custom">{data && data[parentKeys[PlayerName]]}</h1>
+                <h1 className="pb-3 text-custom">{PlayerName}</h1>
               </Col>
             </Row>
             <Row>
               <Col md className="bg-white rounded-start-5 p-3">
                 <Form>
                   <Form.Group>
-                    <Form.Label>{parentKeys[UserID]}:</Form.Label>
+                    <Form.Label>User ID:</Form.Label>
                     <div className="d-flex align-items-center">
                       <Form.Control
                         disabled
                         type="text"
                         className="ms-4 bg-light"
                         style={{ width: "95%" }}
-                        defaultValue={data && data[parentKeys[UserID]]}
+                        defaultValue={UserID}
                       />
                     </div>
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label>{parentKeys[PlayerName]}:</Form.Label>
+                    <Form.Label>Player Name:</Form.Label>
                     <div className="d-flex align-items-center">
                       <Form.Control
-                        disabled={!editableFields[parentKeys[PlayerName]]}
+                        disabled={!editableFields['PlayerName']}
                         type="text"
                         className="ms-4 bg-light"
                         style={{ width: "95%" }}
-                        defaultValue={data && data[parentKeys[PlayerName]]}
+                        defaultValue={PlayerName}
                         onChange={(e) =>
                           handleInputChange(
-                            parentKeys[PlayerName],
+                            'PlayerName',
                             e.target.value
                           )
                         }
@@ -187,31 +201,31 @@ function UserData({selectedColor, selectedTextColor}) {
                         variant="secondary"
                         className="ms-2 text-custom"
                         onClick={() => {
-                          if (editableFields[parentKeys[PlayerName]]) {
+                          if (editableFields["PlayerName"]) {
                             saveData(
-                              parentKeys[PlayerName],
-                              editedValues[parentKeys[PlayerName]]
+                              "PlayerName",
+                              editableFields["PlayerName"]
                             );
                           }
-                          toggleEditMode(parentKeys[PlayerName]);
+                          toggleEditMode("PlayerName");
                         }}
                       >
-                        {editableFields[parentKeys[PlayerName]] ? "Save" : "Edit"}
+                        {editableFields["PlayerName"] ? "Save" : "Edit"}
                       </Button>
                     </div>
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label>{parentKeys[Description]}:</Form.Label>
+                    <Form.Label>Description:</Form.Label>
                     <div className="d-flex align-items-center">
                       <textarea
-                        disabled={!editableFields[parentKeys[Description]]}
+                        disabled={!editableFields['Description']}
                         className="form-control ms-4 bg-light"
                         style={{ width: "95%" }}
-                        defaultValue={data && data[parentKeys[Description]]}
+                        defaultValue={Description}
                         onChange={(e) =>
                           handleInputChange(
-                            parentKeys[Description],
+                            'Description',
                             e.target.value
                           )
                         }
@@ -220,16 +234,16 @@ function UserData({selectedColor, selectedTextColor}) {
                         variant="secondary"
                         className="ms-2 text-custom"
                         onClick={() => {
-                          if (editableFields[parentKeys[Description]]) {
+                          if (editableFields['Description']) {
                             saveData(
-                              parentKeys[Description],
-                              editedValues[parentKeys[Description]]
+                              'Description',
+                              editedValues['Description']
                             );
                           }
-                          toggleEditMode(parentKeys[Description]);
+                          toggleEditMode('Description');
                         }}
                       >
-                        {editableFields[parentKeys[Description]] ? "Save" : "Edit"}
+                        {editableFields['Description'] ? "Save" : "Edit"}
                       </Button>
                     </div>
                   </Form.Group>
@@ -245,13 +259,13 @@ function UserData({selectedColor, selectedTextColor}) {
                             <div key={index} className="me-3">
                               <div>{key}:</div>
                               <Form.Control
-                                disabled={!editableFields[parentKeys[Progression]]}
+                                disabled={!editableFields['Progression']}
                                 type="number"
                                 className="bg-light"
                                 defaultValue={progressValues[index]}
                                 onChange={(e) =>
-                                  handleInputChange(parentKeys[Progression], {
-                                    ...editedValues[parentKeys[Progression]],
+                                  handleInputChange('Progression', {
+                                    ...editedValues['Progression'],
                                     [key]: e.target.value,
                                   })
                                 }
@@ -266,14 +280,14 @@ function UserData({selectedColor, selectedTextColor}) {
                         variant="secondary"
                         className="mt-2 text-custom"
                         onClick={() => {
-                          console.log(editedValues[parentKeys[Progression]]);
-                          if (editableFields[parentKeys[Progression]] && editedValues[parentKeys[Progression]] !== undefined ) {
-                            handleSaveProgress();
+                          console.log(editedValues['Progression']);
+                          if (editableFields['Progression'] && editedValues['Progression'] !== undefined ) {
+                            //handleSaveProgress();
                           }
-                          toggleEditMode(parentKeys[Progression]);
+                          toggleEditMode('Progression');
                         }}
                       >
-                        {editableFields[parentKeys[Progression]] ? "Save" : "Edit"}
+                        {editableFields['Progression'] ? "Save" : "Edit"}
                       </Button>
                     </Col>
                   </Row>
