@@ -33,11 +33,21 @@ function POIData({selectedColor, selectedTextColor}) {
 
   if (parentKeys && parentKeys.includes("Ownership")) {
 
-    //var Ownership = 2;
+    //var Ownership = 3;
     PoiID++;
     PoiName++;
     PoiType++;
   } 
+
+  if (parentKeys && parentKeys.includes("Leaderboard")) {
+    // eslint-disable-next-line
+    //var Leaderboard = 2;
+    
+    Location++;
+    PoiID++;
+    PoiName++;
+    PoiType++;
+  }
 
   if (parentKeys && parentKeys.includes("ImageLocation")) {
     // eslint-disable-next-line

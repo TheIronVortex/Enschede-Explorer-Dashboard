@@ -31,7 +31,7 @@ function Documentation() {
             </li>
             <li>
               <a className="list-group-item" target="_blank" rel="noreferrer" href="https://firebasestorage.googleapis.com/v0/b/enschede-explorer-v3.appspot.com/o/Images%2FShocked%20Pikachu.png?alt=media&token=2259741f-569f-4732-8aad-dd399fa2af2b" download>
-                Free Ram!
+                Test
               </a>
             </li>
           </ul>

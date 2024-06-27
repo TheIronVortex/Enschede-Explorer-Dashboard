@@ -6,6 +6,7 @@ import BreadcrumbNav from "../Navbar/BreadcrumNav";
 import AddNewRoute from "./AddNewRoute";
 import AddNewPOI from "./AddNewPOI";
 import AddNewItem from "./AddNewItem";
+import AddNewQRCode from "./AddNewQRCode";
 
 function AddNewData({selectedColor, selectedTextColor}) {
   const { ParentKey } = useParams();
@@ -21,6 +22,7 @@ function AddNewData({selectedColor, selectedTextColor}) {
       <Row>
         <Col>
           <Card className="p-5 card rounded-5" style={{ '--primary-color': selectedColor, '--text-color': selectedTextColor }}>
+            <h1 className="text-custom">Add New {ParentKey}</h1>
             <Row>
               <Col md className="bg-white rounded-5 p-3"> 
                 {ParentKey === 'Routes' && (
@@ -31,6 +33,9 @@ function AddNewData({selectedColor, selectedTextColor}) {
                 )}
                 {ParentKey === 'Shop' && (
                   <AddNewItem />
+                )}
+                {ParentKey === 'QRCodes' && (
+                  <AddNewQRCode />
                 )}
               </Col>
             </Row>

@@ -32,7 +32,8 @@ function MapOverview() {
   useEffect(() => {
     const map = new mapboxgl.Map({
       container: mapContainerRef.current,
-      style: 'mapbox://styles/mapbox/streets-v12',
+      //style: 'mapbox://styles/mapbox/streets-v12',
+      style: 'mapbox://styles/enschedeexplorer3/cluic42wf018z01pr4rbybhye',
       center: [6.8965, 52.2200],
       zoom: 12
     });

@@ -4,6 +4,7 @@ import POIData from "./POIData";
 import RouteData from "./RouteData";
 import ShopData from "./ShopData";
 import UserData from "./UserData";
+import QRCodeData from "./QRcodeData";
 
 function DataOverview({selectedColor, selectedTextColor}) {
 
@@ -23,6 +24,9 @@ function DataOverview({selectedColor, selectedTextColor}) {
       break;
     case "Users":
       ParentKeyValue = <UserData selectedColor={selectedColor} selectedTextColor={selectedTextColor}/>
+      break;
+    case "QRCodes":
+      ParentKeyValue = <QRCodeData selectedColor={selectedColor} selectedTextColor={selectedTextColor}/>
       break;
     default:
   }

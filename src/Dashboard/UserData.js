@@ -23,15 +23,43 @@ function UserData({selectedColor, selectedTextColor}) {
 
   const navigate = useNavigate();
   const { parentKeys, data, ValueName } = GetData();
-  if (parentKeys.includes('Admin')) {
-    //const Admin = 0 
-    //Character ++;
-    Description ++;
+
+  if (parentKeys.includes('FriendData')) {
+    console.log("FriendData Included");
+    //var FriendRequest = 2 ;
     //Inventroy ++;
     PlayerName ++;
     Progression ++;
     UserID ++;
   }
+
+  if (parentKeys.includes('Admin')) {
+    console.log("Admin Included");
+    //const Admin = 0 
+    //Character ++;
+    Description ++;
+    //FriendRequest ++;
+    //Inventroy ++;
+    PlayerName ++;
+    Progression ++;
+    UserID ++;
+  }
+
+  if (parentKeys.includes('Achievements')) {
+    console.log("Achievements Included");
+    //var Achievements = 0;
+    //Admin ++;
+    //Character ++;
+    Description ++;
+    //FriendRequest ++;
+    //Inventroy ++;
+    PlayerName ++;
+    Progression ++;
+    UserID ++;
+  }
+
+  //console.log(data && data[parentKeys[Progression]])
+
   const [editableFields, setEditableFields] = useState({
     [parentKeys[2]]: false,
     [parentKeys[1]]: false,

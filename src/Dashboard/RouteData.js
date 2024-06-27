@@ -180,8 +180,9 @@ function UserData({selectedColor, selectedTextColor}) {
                       </Button>
                     </div>
                   </Form.Group>
-                  {//<RouteMap PoiList={data && data[parentKeys[PoiIDList]]} />
-                  }
+                
+                  <RouteMap PoiList={data && data[parentKeys[PoiIDList]]} />
+                                  
                   <Form.Group>
                     <Form.Label>{parentKeys[RouteDistance]}:</Form.Label>
                     <div className="d-flex align-items-center">
